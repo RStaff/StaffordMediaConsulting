@@ -1,17 +1,33 @@
-name: Terraform CI
+name: Terraform
 
 on:
-  push:
-    branches: [ main ]
+  pull_request:
+    paths:
+      - 'infra/modules/**'
+      - '*/infra/financial_pipeline/**'
 
 jobs:
-  terraform:
+  fmt-validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Terraform
+
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
-      - name: Terraform Init & Plan (dev)
+        with:
+          terraform_version: 1.5.0
+
+      - name: Terraform fmt
+        run: terraform fmt -check -recursive
+
+      - name: Terraform validate (dev)
         working-directory: dev/infra/financial_pipeline
-        run: terraform init -reconfigure -backend-config="bucket=ross-data-pipeline-tfstate" -backend-config="key=dev/financial_pipeline/terraform.tfstate" -backend-config="region=us-east-1" -backend-config="dynamodb_table=ross-data-pipeline-tfstate-locks" && terraform plan -lock=false
-      # You can duplicate the above for staging/prod with manual approvals
+        run: terraform init -backend=false && terraform validate
+
+      - name: Terraform validate (staging)
+        working-directory: staging/infra/financial_pipeline
+        run: terraform init -backend=false && terraform validate
+
+      - name: Terraform validate (prod)
+        working-directory: prod/infra/financial_pipeline
+        run: terraform init -backend=false && terraform validate
