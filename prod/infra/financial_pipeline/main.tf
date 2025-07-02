@@ -1,16 +1,16 @@
 terraform {
   backend "s3" {
-    bucket         = "ross-data-pipeline-tfstate"
-    key            = "prod/financial_pipeline/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "ross-data-pipeline-tfstate-locks"
+    bucket         = var.bucket_name
+    key            = var.key
+    region         = var.region
+    dynamodb_table = var.dynamodb_table
   }
 }
 
 module "financial_pipeline" {
-  source         = "../../../infra/modules/financial_pipeline"
-  bucket_name    = "ross-data-pipeline-tfstate"
+  source         = "../../../../infra/modules/financial_pipeline"
+  bucket_name    = var.bucket_name
+  dynamodb_table = var.dynamodb_table
+  region         = var.region
   key            = "prod/financial_pipeline/terraform.tfstate"
-  region         = "us-east-1"
-  dynamodb_table = "ross-data-pipeline-tfstate-locks"
 }
