@@ -1,0 +1,64 @@
+# Stafford Media Consulting File Naming & Structure Guide
+
+## 1. File Naming Pattern  
+Use this template for **all** files:  
+
+<Dept><Type><Name>_<YYYYMMDD>_vXX.<ext>
+
+- **Dept**: Marketing, Sales, Analytics, Operations  
+- **Type**: Data, AgentConfig, Script, Notebook, Report, Dashboard, Model  
+- **Name**: short descriptor (lead_audit, ad_optimizer, user_churn)  
+- **YYYYMMDD**: date (e.g. 20250702)  
+- **vXX**: version (v01, v02, …)  
+- **ext**: csv, json, py, sql, ipynb, md, pdf, etc.
+
+## 2. Folder‐Structure Rules  
+- All projects live under the monorepo root:  
+/prod
+/Marketing
+/Sales
+/Analytics
+/<project_name>
+/Operations
+/infra
+/marketing
+/sales
+/analytics
+/operations
+/_Conventions
+/dev
+/staging
+/Archive
+
+- **Name folders** by department then project, using camelCase or snake_case consistently.  
+- Use a `.gitkeep` in empty folders to ensure Git tracks them.
+
+## 3. Commit Message Conventions  
+Follow Conventional Commits style:  
+- **feat:** a new feature (e.g. `feat: add ad_spend_optimizer script`)  
+- **fix:** a bugfix (e.g. `fix: correct CSV delimiter in lead_audit`)  
+- **chore:** non-functional change (e.g. `chore: update terraform backend configuration`)  
+- **docs:** documentation only (e.g. `docs: add naming guide details`)  
+- Always include a short subject (50 chars max) and optional body for details.
+
+## 4. Runbook & Links  
+- **Triggering a pipeline**:  
+- In **DEV**, push to `dev` branch; CI will deploy DAG to Airflow dev namespace.  
+- To run manually:  
+  ```bash
+  airflow dags trigger <dag_id> --conf '{"run_date":"YYYY-MM-DD"}'
+  ```  
+- **Adding a new DAG**:  
+1. Create your Python DAG file under `prod/<Dept>/<Project>/Workflows/`.  
+2. Include `dag_id` matching `<project_name>_workflow`.  
+3. Open a PR—CI lint checks and unit tests must pass.  
+4. Merge to `staging` for QA, then to `prod` to deploy.  
+- **Updating Terraform**:  
+```bash
+cd infra/<component>
+terraform fmt
+terraform init
+terraform plan
+terraform apply --auto-approve
+ //slack channel
+ #infra-alerts
