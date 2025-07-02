@@ -1,23 +1,22 @@
-/*
-  inputs for the financial_pipeline module
-*/
 variable "bucket_name" {
-  description = "S3 bucket for storing Terraform state"
   type        = string
-}
-
-variable "key" {
-  description = "Path inside the bucket to store the state file"
-  type        = string
-}
-
-variable "region" {
-  description = "AWS region for backend resources"
-  type        = string
-  default     = "us-east-1"
+  description = "S3 bucket for Terraform state"
+  default     = "ross-data-pipeline-tfstate"
 }
 
 variable "dynamodb_table" {
-  description = "DynamoDB table name for state locking"
   type        = string
+  description = "DynamoDB table for Terraform locks"
+  default     = "ross-data-pipeline-tfstate-locks"
+}
+
+variable "region" {
+  type        = string
+  description = "AWS region"
+  default     = "us-east-1"
+}
+
+variable "key" {
+  type        = string
+  description = "State file key (path) in the S3 bucket"
 }

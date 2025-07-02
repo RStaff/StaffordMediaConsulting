@@ -1,12 +1,9 @@
-/*
-  outputs from the financial_pipeline module
-*/
-output "tfstate_bucket_arn" {
-  description = "The ARN of the S3 bucket holding state"
-  value       = aws_s3_bucket.tfstate.arn
+output "bucket" {
+  value       = aws_s3_bucket.tfstate.bucket
+  description = "Name of the TF state bucket"
 }
 
-output "lock_table_name" {
-  description = "The DynamoDB table name used for state locking"
+output "table_name" {
   value       = aws_dynamodb_table.lock.name
+  description = "Name of the TF lock table"
 }
