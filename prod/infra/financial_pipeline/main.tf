@@ -1,9 +1,9 @@
 terraform {
   backend "s3" {
-    bucket         = "ross-data-pipeline-tfstate"
+    bucket         = var.bucket_name
     key            = "prod/financial_pipeline/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "ross-data-pipeline-tfstate-locks"
+    region         = var.region
+    dynamodb_table = var.dynamodb_table
   }
 }
 
