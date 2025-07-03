@@ -1,11 +1,27 @@
+resource "aws_s3_bucket" "tfstate" {
+  bucket = var.bucket_name
+  acl    = "private"
+}
 
 resource "aws_dynamodb_table" "lock" {
   name         = var.dynamodb_table
-  hash_key     = "LockID"
   billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "LockID"
 
   attribute {
     name = "LockID"
     type = "S"
   }
+}
+
+variable "bucket_name" {
+  type = string
+}
+
+variable "region" {
+  type = string
+}
+
+variable "dynamodb_table" {
+  type = string
 }
