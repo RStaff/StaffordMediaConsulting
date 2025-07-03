@@ -9,3 +9,7 @@ variable "region" {
 variable "dynamodb_table" {
   type = string
 }
+
+variable "key" {
+  type = string
+}
