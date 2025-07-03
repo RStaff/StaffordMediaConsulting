@@ -3,57 +3,51 @@ name: Terraform CI
 on:
   push:
     branches:
+      - main
       - dev
       - staging
-      - main
+      - prod
   pull_request:
     branches:
+      - main
       - dev
       - staging
-      - main
+      - prod
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        env: [ dev, staging, prod ]
+        env: [dev, staging, prod]
 
     steps:
-      # 1) Grab your code
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2) Install Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: '1.5.0'
 
-      # 3) Terraform fmt
-      - name: fmt in ${{ matrix.env }}
-        working-directory: ./${{ matrix.env }}/infra/financial_pipeline
+      - name: Terraform fmt
+        working-directory: ${{ matrix.env }}/infra/financial_pipeline
         run: terraform fmt -check
 
-      # 4) Terraform init (no backend)
-      - name: Init (no-backend) in ${{ matrix.env }}
-        working-directory: ./${{ matrix.env }}/infra/financial_pipeline
+      - name: Terraform init (no-backend)
+        working-directory: ${{ matrix.env }}/infra/financial_pipeline
         run: terraform init -backend=false
 
-      # 5) Terraform validate
-      - name: Validate in ${{ matrix.env }}
-        working-directory: ./${{ matrix.env }}/infra/financial_pipeline
+      - name: Terraform validate
+        working-directory: ${{ matrix.env }}/infra/financial_pipeline
         run: terraform validate
 
-      # 6) Terraform plan
-      - name: Plan in ${{ matrix.env }}
-        working-directory: ./${{ matrix.env }}/infra/financial_pipeline
+      - name: Terraform plan
+        working-directory: ${{ matrix.env }}/infra/financial_pipeline
         run: terraform plan -out=tfplan
 
-      # 7) Upload the plan file
-      - name: Upload plan artifact
+      - name: Upload plan
         uses: actions/upload-artifact@v3
         with:
           name: tfplan-${{ matrix.env }}
-          path: ./${{ matrix.env }}/infra/financial_pipeline/tfplan
-# …yaml content…
+          path: ${{ matrix.env }}/infra/financial_pipeline/tfplan
