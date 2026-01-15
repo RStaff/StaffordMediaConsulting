@@ -14,3 +14,4 @@ module "financial_pipeline" {
   region         = var.region
   dynamodb_table = var.dynamodb_table
 }
+
